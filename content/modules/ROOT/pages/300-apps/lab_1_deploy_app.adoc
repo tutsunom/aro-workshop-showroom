@@ -338,7 +338,7 @@ image::web-console-builds.png[OpenShift Web Console - Builds]
 
 On the next screen, explore around.
 Look specifically at the YAML definition of the build and the logs to see what the build actually did.
-If you build failed for some reason, the logs are a great first place to start to look at to debug what happened.
+If your build failed for some reason, the logs are a great first place to start to look at to debug what happened.
 
 image::web-console-build-logs.png[OpenShift Web Console - Build Logs]
 
