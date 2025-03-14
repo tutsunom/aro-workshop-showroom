@@ -6,7 +6,7 @@
 +
 [source,sh,options=nowrap,subs="attributes"]
 ----
-az account --subscription {azure_subscription}
+az account set --subscription {azure_subscription}
 ----
 
 . Make sure your cluster is ready  by using the `aro show` extension to the `az` command. Use this command to check on the state of your ARO clusters.
