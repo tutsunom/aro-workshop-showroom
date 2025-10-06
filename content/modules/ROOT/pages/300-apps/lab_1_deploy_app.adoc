@@ -31,11 +31,11 @@ To do so, run the following command (this command will take ~ 5mins)
 +
 [source,sh,role=execute,subs="attributes"]
 ----
-az postgres server create --resource-group openenv-$GUID \
-  --location eastus --sku-name GP_Gen5_2 \
-  --name microsweeper-$GUID --storage-size 51200 \
-  --admin-user myAdmin --admin-pass 'M1cr0Sw33p3r!' \
-  --public 0.0.0.0
+az postgres flexible-server create  \
+  --resource-group openenv-$GUID  \ 
+  --location eastus --sku-name Standard_D2s_v3 \
+  --admin-user myAdmin --admin-password "M1cr0Sw33p3r!" \
+  --public-access 0.0.0.0
 ----
 +
 .Sample Output
