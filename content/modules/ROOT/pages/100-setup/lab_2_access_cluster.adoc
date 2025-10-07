@@ -4,7 +4,7 @@
 
 . Set your account to the proper subscription.
 +
-[source,sh,options=nowrap,subs="attributes"]
+[source,sh,role=execute,options=nowrap,subs="attributes"]
 ----
 az account set --subscription {azure_subscription}
 ----
