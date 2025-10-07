@@ -4,7 +4,7 @@
 
 . Set your account to the proper subscription.
 +
-[source,sh,options=nowrap,subs="attributes"]
+[source,sh,role=execute,options=nowrap,subs="attributes"]
 ----
 az account set --subscription {azure_subscription}
 ----
@@ -127,7 +127,7 @@ oc login "${OCP_API}" -u "${OCP_USER}" -p "${OCP_PASS}"
 ----
 Login successful.
 
-You have access to 72 projects, the list has been suppressed. You can list all projects with
+You have access to 74 projects, the list has been suppressed. You can list all projects with
 'oc projects'
 
 Using project "default".
