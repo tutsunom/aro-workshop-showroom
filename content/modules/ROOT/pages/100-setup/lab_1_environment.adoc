@@ -19,8 +19,8 @@ az version
 [source,texinfo]
 ----
 {
-  "azure-cli": "2.56.0",
-  "azure-cli-core": "2.56.0",
+  "azure-cli": "2.77.0",
+  "azure-cli-core": "2.77.0",
   "azure-cli-telemetry": "1.1.0",
   "extensions": {}
 }
@@ -36,10 +36,10 @@ oc version
 .Sample Output
 [source,texinfo]
 ----
-Client Version: 4.13.23
-Kustomize Version: v4.5.7
-Server Version: 4.13.23
-Kubernetes Version: v1.26.9+636f2be
+Client Version: 4.17.27
+Kustomize Version: v5.0.4-0.20230601165947-6ce0bf390ce3
+Server Version: 4.17.27
+Kubernetes Version: v1.30.11
 ----
 
 You are ready to start using your ARO cluster.
