@@ -16,7 +16,7 @@ oc new-project istio-system
 .Sample Output
 [source,text,options=nowrap]
 ----
-Now using project "istio-system" on server "https://api.rosa-6n4s8.1c1c.p1.openshiftapps.com:6443".
+Now using project "istio-system" on server "https://api.qow5z9hq.eastus.aroapp.io:6443"
 
 You can add applications to this project with the 'new-app' command. For example, try:
 
