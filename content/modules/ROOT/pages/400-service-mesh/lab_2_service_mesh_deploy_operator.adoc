@@ -8,18 +8,23 @@ Before moving on, ensure you have deployed all four of these operators.
 ====
 
 * *OpenShift Elasticsearch Operator* - Provides database storage for tracing and logging with the distributed tracing platform.
-It is based on the open core Elasticsearch project. Use the `stable` channel.
+It is based on the open core Elasticsearch project. Use the `stable-5.8` channel.
 
 * *Red Hat OpenShift distributed tracing platform* - Provides distributed tracing to monitor and troubleshoot transactions in complex distributed systems.
-It is based on the open source Jaeger project. Use the `stable` channel.
+It is based on the open source Jaeger project. Use the `stable` channel, version `1.65.0-4`.
 
 * *Kiali Operator* - Provides observability for your service mesh.
 Allows you to view configurations, monitor traffic, and analyze traces in a single console.
-It is based on the open source Kiali project. Use the `stable` channel.
+It is based on the open source Kiali project. Use the `stable` channel, version `2.11.3`.
 
-* *Red Hat OpenShift Service Mesh* - Allows you to connect, secure, control, and observe the microservices that comprise your applications.
+* *Red Hat OpenShift Service Mesh 2* - Allows you to connect, secure, control, and observe the microservices that comprise your applications.
 +
-The Service Mesh Operator defines and monitors the ServiceMeshControlPlane resources that manage the deployment, updating, and deletion of the Service Mesh components. It is based on the open source Istio project. Use the `stable` channel.
+The Service Mesh Operator defines and monitors the ServiceMeshControlPlane resources that manage the deployment, updating, and deletion of the Service Mesh components. It is based on the open source Istio project. Use the version 2 product, with the `stable` channel, version `2.6.10-0`.
++
+[CAUTION]
+====
+*Use version 2* of Service Mesh. `Red Hat OpenShift Service Mesh 2`.
+====
 
 === Operator installation Procedure
 
@@ -47,6 +52,6 @@ image::operatorhub-click-install.png[Operator Install]
 * The **Red Hat OpenShift distributed tracing** platform is installed in the `openshift-distributed-tracing` namespace and is available for all namespaces in the cluster.
 * The **Kiali Operator** and **Red Hat OpenShift Service Mesh** Operators are installed in the `openshift-operators` namespace and are available for all namespaces in the cluster.
 
-. After all you have installed all four Operators, click *Operators → Installed Operators* to verify that your Operators installed cirrectly.
+. After all you have installed all four Operators, click *Operators → Installed Operators* to verify that your Operators installed correctly.
 +
 image::show-installed-operators.png[Installed Operators]
