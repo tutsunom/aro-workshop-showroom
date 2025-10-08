@@ -438,6 +438,22 @@ oc -n openshift-logging rollout restart daemonset collector
 daemonset.apps/collector restarted
 ----
 
+. Create the cluster-monitoring configmap
++
+[source,sh,role=execute]
+----
+cat <<EOF | oc apply -f -
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cluster-monitoring-config
+  namespace: openshift-monitoring
+data:
+  config.yaml: |
+EOF
+----
+
 == View the Metrics and Logs
 
 Now that the metrics and log forwarding are forwarding to Azure Files, let's view them in Grafana.
@@ -462,7 +478,7 @@ https://grafana-route-custom-logging.apps.nbybk9f3.eastus.aroapp.io
 +
 [INFO]
 ====
-These dashboards are copies of the dashboards that are available directly on the OpenShift web console under *Observability*".
+These dashboards are copies of the dashboards that are available directly on the OpenShift web console under *Observability*.
 ====
 +
 image::grafana-metrics.png[]
