@@ -1,6 +1,9 @@
 == Introduction
 
-It's time for us to put our cluster to work and deploy a workload! We're going to build an example Java application, https://github.com/redhat-mw-demos/microsweeper-quarkus/tree/ARO[microsweeper,window=_blank], using https://quarkus.io/[Quarkus,window=_blank] (a Kubernetes-native Java stack) and https://azure.microsoft.com/en-us/products/postgresql/[Azure Database for PostgreSQL,window=_blank]. After configuring the database, we will use both Quarkus, a Kubernetes-native Java framework optimized for containers, and Source-to-Image (S2I), a toolkit for building container images from source code, to deploy the microsweeper application.
+It's time for us to put our cluster to work and deploy a workload!
+
+We're going to build an example Java application, https://github.com/redhat-mw-demos/microsweeper-quarkus/tree/ARO[microsweeper,window=_blank], using https://quarkus.io/[Quarkus,window=_blank] (a Kubernetes-native Java stack) and https://azure.microsoft.com/en-us/products/postgresql/[Azure Database for PostgreSQL,window=_blank].
+After configuring the database, we will use both Quarkus, a Kubernetes-native Java framework optimized for containers, and Source-to-Image (S2I), a toolkit for building container images from source code, to deploy the microsweeper application.
 
 == Create Azure Database for PostgreSQL instance
 
@@ -31,12 +34,22 @@ To do so, run the following command (this command will take ~ 5mins)
 +
 [source,sh,role=execute,subs="attributes"]
 ----
+az postgres flexible-server create \
+--resource-group openenv-$GUID \
+--location eastus \
+--name microsweeper-$GUID \
+--admin-user myAdmin  --admin-password 'M1cr0Sw33p3r!' \
+--sku-name Standard_D2s_v3 \
+--storage-size 64 \
+--public-access all
+----
+////
 az postgres flexible-server create  \
-  --resource-group openenv-$GUID  \ 
+  --resource-group openenv-$GUID  \
   --location eastus --sku-name Standard_D2s_v3 \
   --admin-user myAdmin --admin-password "M1cr0Sw33p3r!" \
   --public-access 0.0.0.0
-----
+////
 +
 .Sample Output
 [source,text,options=nowrap]
@@ -44,7 +57,7 @@ az postgres flexible-server create  \
 Checking the existence of the resource group 'openenv-qsd7p'...
 Resource group 'openenv-qsd7p' exists ? : True
 Creating postgres Server 'microsweeper-qsd7p' in group 'openenv-qsd7p'...
-Your server 'microsweeper-qsd7p' is using sku 'GP_Gen5_2' (Paid Tier). Please refer to https://aka.ms/postgres-pricing  for pricing details
+Your server 'microsweeper-qsd7p' is using sku 'Standard_D2s_v3' (Paid Tier). Please refer to https://aka.ms/postgres-pricing  for pricing details
 Configuring server firewall rule, 'azure-access', to accept connections from all Azure resources...
 Make a note of your password. If you forget, you would have to reset your password with 'az postgres server update -n microsweeper-qsd7p -g openenv-qsd7p -p <new-password>'.
 {
@@ -61,22 +74,22 @@ In a real world scenario you would create a private database and connect to it o
 ====
 
 . Check connectivity to the database.
-To do so, run the following command:
+To do so, run the following two commands:
 +
 [source,sh,role=execute,subs="attributes"]
 ----
 psql \
   "host=microsweeper-$GUID.postgres.database.azure.com port=5432
   dbname=postgres
-  user=myAdmin@microsweeper-$GUID.postgres.database.azure.com password=M1cr0Sw33p3r! sslmode=require" \
+  user=myAdmin password=M1cr0Sw33p3r! sslmode=require" \
   -c "select now();"
 ----
-+
 .Sample Output
 [source,text,options=nowrap]
 ----
+              now
 -------------------------------
- 2023-04-24 20:44:38.088556+00
+ 2025-10-08 13:54:38.208485+00
 (1 row)
 ----
 
@@ -84,7 +97,8 @@ psql \
 
 Now that we've got an Azure managed PostgreSQL instance up and running, let's build and deploy our application.
 
-. In order to build the application you will need the Java JDK 17 and the Quarkus CLI installed. Java JDK 17 is already installed on your bastion VM so let's install the Quarkus CLI:
+. In order to build the application you will need the Java JDK 17 and the Quarkus CLI installed.
+Java JDK 17 is already installed on your bastion VM so let's install the Quarkus CLI:
 +
 [source,sh,role=execute]
 ----
@@ -107,7 +121,7 @@ quarkus --version
 .Sample Output
 [source,text,options=nowrap]
 ----
-3.19.1
+3.28.2
 ----
 
 . Now, let's clone the application from GitHub to our local bastion VM.
@@ -194,6 +208,40 @@ EOF
 secret/microsweeper-secret created
 ----
 
+
+
+
+. Create a secret to store the database connection details.
++
+[source,sh,role=execute,subs="attributes"]
+----
+cat << EOF | oc apply -f -
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: microsweeper-secret
+  namespace: microsweeper-ex
+type: Opaque
+stringData:
+  PG_URL: jdbc:postgresql://microsweeper-$GUID.postgres.database.azure.com:5432/postgres
+  PG_USER: myAdmin
+  PG_PASS: "M1cr0Sw33p3r!"
+EOF
+----
+////
+----
+psql \
+  "host=microsweeper-$GUID.postgres.database.azure.com port=5432
+  dbname=postgres
+  user=myAdmin@microsweeper-$GUID.postgres.database.azure.com password=M1cr0Sw33p3r! sslmode=require" \
+  -c "select now();"
+----
+////
+
+
+
+
 . Now, we'll configure Quarkus to use the PostgreSQL database that we created earlier in this section.
 To do so, we'll create an `application.properties` file to use by running the following command:
 +
@@ -242,8 +290,8 @@ Downloaded from central: https://repo.maven.apache.org/maven2/io/quarkus/platfor
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time:  02:41 min
-[INFO] Finished at: 2023-04-24T20:58:59Z
+[INFO] Total time:  03:49 min
+[INFO] Finished at: 2025-10-08T14:03:35Z
 [INFO] ------------------------------------------------------------------------
 ----
 +
@@ -324,13 +372,13 @@ The Dockerfile file from the git repo that we cloned was used for this BuildConf
 A build configuration describes a single build definition and a set of triggers for when a new build is created.
 Build configurations are defined by a BuildConfig, which is a REST object that can be used in a POST to the API server to create a new instance.
 
-You can read more about BuildConfigs https://docs.openshift.com/container-platform/latest/cicd/builds/understanding-buildconfigs.html[here,window=_blank].
+You can https://docs.openshift.com/container-platform/latest/cicd/builds/understanding-buildconfigs.html[read more about BuildConfigs,window=_blank].
 
 Once the BuildConfig was created, the source-to-image process kicked off a Build of that BuildConfig.
 The build is what actually does the work in building and deploying the image.
 We started with defining what to be built with the BuildConfig and then actually did the work with the Build.
 
-You can read more about Builds https://docs.openshift.com/container-platform/latest/cicd/builds/understanding-image-builds.html[here,window=_blank].
+You can https://docs.openshift.com/container-platform/latest/cicd/builds/understanding-image-builds.html[read more about Builds,window=_blank].
 
 To look at what the build actually did, click on Builds tab and then into the first Build in the list.
 
@@ -372,7 +420,7 @@ image::web-console-routes.png[OpenShift Web Console - Routes]
 
 === Test the application
 
-While in the route section of the OpenShift Web Console, click the URL under _Location_: 
+While in the route section of the OpenShift Web Console, click the URL under _Location_:
 
 image::web-console-route-link.png[OpenShift Web Console - Route Link]
 
@@ -411,7 +459,7 @@ While you're here, expore the other available dashboards to learn more about you
 
 image::custom-metrics-projects.png[OpenShift Web Console - Custom Metrics Timeframe]
 
-== Summary 
+== Summary
 
 Here you learned how to:
 
