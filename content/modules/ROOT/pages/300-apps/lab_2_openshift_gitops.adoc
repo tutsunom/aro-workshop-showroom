@@ -138,7 +138,8 @@ EOF
 application.argoproj.io/bgd-app created
 ----
 
-. Find the URL for your Argo CD dashboard and log in using your OpenShift credentials
+. While the ArgoCD operator deploys an instance of ArgoCD for the whole cluster to use, we've deployed ArgoCD scoped in and scoped to the *bdg* namespace.
+Find the URL for the *bdg* Argo CD dashboard and log in using your OpenShift credentials
 +
 [source,sh,role=execute]
 ----
@@ -152,6 +153,9 @@ https://argocd-server-bgd.apps.c90qz1cy.eastus.aroapp.io
 ----
 +
 image::argo_app1.png[]
++
+* Username: kubeadmin
+* Password: {aro_kube_password}
 
 . Click on the Application *bgd-app* to show its topology
 +
