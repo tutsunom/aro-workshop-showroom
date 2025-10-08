@@ -43,13 +43,6 @@ az postgres flexible-server create \
 --storage-size 64 \
 --public-access all
 ----
-////
-az postgres flexible-server create  \
-  --resource-group openenv-$GUID  \
-  --location eastus --sku-name Standard_D2s_v3 \
-  --admin-user myAdmin --admin-password "M1cr0Sw33p3r!" \
-  --public-access 0.0.0.0
-////
 +
 .Sample Output
 [source,text,options=nowrap]
@@ -72,7 +65,7 @@ Make a note of your password. If you forget, you would have to reset your passwo
 For the sake of the workshop we are creating a public database that any host in Azure can connect to.
 In a real world scenario you would create a private database and connect to it over a private link service
 ====
-
++
 . Check connectivity to the database.
 To do so, run the following two commands:
 +
@@ -84,6 +77,7 @@ psql \
   user=myAdmin password=M1cr0Sw33p3r! sslmode=require" \
   -c "select now();"
 ----
++
 .Sample Output
 [source,text,options=nowrap]
 ----
@@ -197,7 +191,7 @@ metadata:
 type: Opaque
 stringData:
   PG_URL: jdbc:postgresql://microsweeper-$GUID.postgres.database.azure.com:5432/postgres
-  PG_USER: myAdmin@microsweeper-$GUID.postgres.database.azure.com
+  PG_USER: myAdmin
   PG_PASS: "M1cr0Sw33p3r!"
 EOF
 ----
@@ -207,40 +201,6 @@ EOF
 ----
 secret/microsweeper-secret created
 ----
-
-
-
-
-. Create a secret to store the database connection details.
-+
-[source,sh,role=execute,subs="attributes"]
-----
-cat << EOF | oc apply -f -
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: microsweeper-secret
-  namespace: microsweeper-ex
-type: Opaque
-stringData:
-  PG_URL: jdbc:postgresql://microsweeper-$GUID.postgres.database.azure.com:5432/postgres
-  PG_USER: myAdmin
-  PG_PASS: "M1cr0Sw33p3r!"
-EOF
-----
-////
-----
-psql \
-  "host=microsweeper-$GUID.postgres.database.azure.com port=5432
-  dbname=postgres
-  user=myAdmin@microsweeper-$GUID.postgres.database.azure.com password=M1cr0Sw33p3r! sslmode=require" \
-  -c "select now();"
-----
-////
-
-
-
 
 . Now, we'll configure Quarkus to use the PostgreSQL database that we created earlier in this section.
 To do so, we'll create an `application.properties` file to use by running the following command:
@@ -410,7 +370,7 @@ The last thing we will look at is the route that was created for our application
 In the quarkus properties file, we specified that the application should be exposed to the Internet.
 When you create a Route, you have the option to specify a hostname.
 To start with, we will just use the default domain that comes with ARO (`useast.aroapp.io` in our case).
-In the next section, we will expose the same application to a custom domain leveraging Azure Front Door.
+//In the next section, we will expose the same application to a custom domain leveraging Azure Front Door.
 
 You can read more about routes in the https://docs.openshift.com/container-platform/latest/networking/routes/route-configuration.html[Red Hat documentation,window=_blank].
 
