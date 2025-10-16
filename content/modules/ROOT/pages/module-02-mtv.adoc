@@ -57,7 +57,7 @@ vSphere上のデータストアやポートグループのようなリソース�
 NOTE: GUID はラボ環境を払い出した際に表示されたページで確認できます。
 
 画面上部の *VMs* タブをクリックして、あなたのVMの詳細を表示します。
-+
+
 image::module-02-mtv/00_Workload_VM_List.png[link=self, window=blank, width=100%]
 
 . *Networks* ビューに変更し、ツリーを展開してVMが使用するポートグループを表示します。名前が *segment-sandbox-xxxxx* であることに注目してください。
@@ -119,8 +119,8 @@ image::module-02-mtv/18_Network_Map.PNG[link=self, window=blank, width=100%]
 . 同様に、*Storage map* を設定します。*Storage map* は、VMware vSphere のデータストアを OpenShift の Storage class にマッピングするために使用されます。以下のように入力して *Next* をクリックします。
 +
 * *Use new storage map* を選択
-* Source network: *workload_share_xxxxx*
-* Target network: *ocs-storagecluster-ceph-rbd*
+* Source storage: *workload_share_xxxxx*
+* Target storage: *ocs-storagecluster-ceph-rbd*
 +
 image::module-02-mtv/18_Storage_Map.PNG[link=self, window=blank, width=100%]
 +
