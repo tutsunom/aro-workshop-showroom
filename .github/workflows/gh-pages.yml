@@ -1,21 +1,17 @@
 name: github pages
-
 on:
   workflow_dispatch:
   push:
     branches: [main]
     paths-ignore:
       - ".gitignore"
-
 permissions:
   pages: write
   id-token: write
   contents: read
-
 concurrency:
   group: gh-pages
-  cancel-in-progress: false
-
+  cancel-in-progress: true
 jobs:
   build:
     runs-on: ubuntu-latest
