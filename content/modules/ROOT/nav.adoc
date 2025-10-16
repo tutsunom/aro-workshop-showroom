@@ -1,3 +1,7 @@
+.*仮想マシンの管理*
+* xref:module-01-intro.adco[仮想マシンの管理]
+* xref:100-setup/lab_2_access_cluster.adoc[Access your ARO cluster]
+
 .*Building a Modern Application Platform*
 * xref:100-setup/lab_1_environment.adoc[Explore the environment]
 * xref:100-setup/lab_2_access_cluster.adoc[Access your ARO cluster]

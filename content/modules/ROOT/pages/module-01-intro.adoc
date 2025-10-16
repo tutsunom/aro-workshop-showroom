@@ -1,0 +1,208 @@
+= 仮想マシンの管理
+
+== はじめに
+
+このラボの最初のセクションでは、OpenShift Virtualization における VM の作成と管理の基本について紹介します。事前に定義されたテンプレートから仮想マシンを作成するプロセス全体を通して、Web コンソールがどのようにあなたをガイドするかを見ていきます。その後、仮想マシンのプロパティを確認し、基本的なカスタマイズを行い、仮想マシン管理者に期待されるライブマイグレーションなどのアクションを実行します。
+
+.*目標*
+
+* 新規仮想マシンの作成
+* 仮想マシンのリソースの確認と変更
+* OpenShift コンソールを使用して VM の電源状態がどのように管理されるかを理解する。
+* 2つのホスト間でVMをライブマイグレートする
+
+== Administratorパースペクティブに切り替える
+OpenShift コンソールにログインします。ログイン情報はラボ環境の要件セクションで提供されています。
+
+- username: kubeadmin
+- password: ラボ環境で表示されているもの
+
+[[create_project]]
+== 新規プロジェクトの作成
+
+OpenShiftの他のオブジェクトと同様に、Project（Kubnernetesの名前空間を抽象化したもの）は、パーミッションやリソースを使用・管理するための境界線となります。プロジェクトの作成はデプロイの重要な第一歩です。
+
+. 初めてコンソールにログインすると、*Developer* パースペクティブが表示されます。プロンプトを表示させないようにするには、*Skip tour* をクリックします。次に、*Developer* をクリックし、*Administrator* に切り替えます。
++
+image::module-01-intro/00_Admin_Perpspective.png[link=self, window=blank, width=100%]
+
+. 左のナビゲーションメニューを使用して、*Virtualization* -> *VirtualMachines* をブラウズします：
++
+image::module-01-intro/01_Left_Menu.png[link=self, window=blank, width=100%]
++
+[NOTE]
+====
+*Virtualization* タブが使用できるのは、Red Hat OpenShift Virtualization がインストールされ、適切に設定されている場合のみです。このラボ環境では、インストールと設定はすでに実行されています。
+====
+
+. *Projects* ドロップダウンからプロジェクト `vmimported-{user}` に切り替えます。
++
+[NOTE]
+====
+このラボガイドの画像には、あなたのユーザー番号とは異なるユーザー番号が表示されているかもしれません。ご自身のユーザー番号に読み替えて作業をご実施ください。
+====
+
+. 表示された *VirtualMachines* ダッシュボードを調べます。現在、VM は何も稼働していませんが、稼働している場合は図のように
++
+image::module-01-intro/02_VM_List.png[link=self, window=blank, width=100%]
+
+. VMを作成する前に、新しいプロジェクトを作成する必要があります。仮想マシンは特定のプロジェクト、つまりネームスペースにデプロイされます。デフォルトでは、いずれかのプロジェクトへのアクセス権限を持たないユーザーは、仮想マシンにアクセスしたり、管理したり、コントロールしたりすることはできません。管理者はすべてのプロジェクトにアクセスできるため、すべての仮想マシンを見ることができますが、一般ユーザーには必要に応じてプロジェクトへのアクセス権を与える必要があります。
++
+.. ウィンドウの左上にある *Project: vmimported-{user}* をクリックし、*Create Project* をクリックします。
++
+image::module-01-intro/02_All_Projects.png[link=self, window=blank, width=100%]
+
+.. *Name* フィールドに *vmexamples-{user}* と入力してプロジェクトの名前を付け、 *Create* をクリックします。
++
+image::module-01-intro/03_Create_Project.png[link=self, window=blank, width=100%]
+
+[[create_vm]]
+== Linux仮想マシンの作成
+
+. Virtual Machinesインベントリから *Create VirtualMachine* ボタンをクリックし、ドロップダウンメニューから *From template* を選択します。
++
+NOTE: VMはInstanceTypeウィザードから作成することや、カスタムYAML定義を入力して作成することもできますが、今回のラボシナリオでは既存のテンプレートに基づいてVMを作成します。
++
+image::module-01-intro/04_Create_VM_Button.png[link=self, window=blank, width=100%]
+
+. ウィザードが表示され、利用可能な定義済みVMテンプレートが表示されます。
++
+利用可能なテンプレートのリストを確認すると、 "Source available" を示す青いバッジが付いているものがあることに気づくでしょう。これらは、自動的にダウンロードされ保存されたソースディスクを使用しているテンプレートです。
+OpenShift Virtualizationを自社の環境にデプロイする場合、オプションによりこれらのソースディスクが作成されないようにしたり、作成されたものを削除することが可能です。
++
+image::module-01-intro/05_Create_VM_Templates.png[link=self, window=blank, width=100%]
+
+. *Fedora VM* タイルを選択すると、ダイアログが開きます。
++
+image::module-01-intro/06_Create_VM_Quick.png[link=self, window=blank, width=100%]
+
+. 名前を *fedora01* に変更し、*Quick create VirtualMachine* を押します：
++
+image::module-01-intro/07_Create_VM_Quick_Name.png[link=self, window=blank, width=100%]
+
+. 数秒後、VMが *Running* であることがわかります。この間、ストレージプロバイダはテンプレートで指定されたディスクをクローンし、新しく作成された仮想マシンで使用できるようにしています。
+この所要時間は、ブートディスクの作成に使用されるストレージプロバイダによって異なります。
++
+image::module-01-intro/08_Fedora_Running.png[link=self, window=blank, width=100%]
+
+. VM が作成されたら、プロセスの詳細を見るために *Events* タブを調べます。VMの作成に問題があれば、このタブにも表示されます。
++
+image::module-01-intro/09_Fedora_Events.png[link=self, window=blank, width=100%]
++
+* はじめに _DataVolume_ が作成されます。_DataVolume_ は VM ディスクの作成を管理するために使われ、VM 作成のフローにおいてクローンやインポートの処理を OpenShift の永続ストレージ上に抽象化しています。
+* その後、 _VM_ が起動します。
+
+. *Overview* タブをクリックすると、VMに関連する情報の詳細を表示するプライマリ画面に戻ります。このテンプレートでは、デフォルトでCPUが1、メモリが2GiBであることに注意してください。管理者として、仮想マシンのデフォルト構成をカスタマイズするテンプレートを作成できます。このラボの後半では、カスタム テンプレートの作成について説明します。
++
+ソフトウェア定義ネットワーク（SDN）上の仮想マシンのIP アドレスも、ストレージデバイス、システム使用率、仮想マシンをホストするクラスタノードなどの情報とともにこのページに表示されます。デフォルトでは、VM はデフォルトのPod Networkに接続されています。このラボの後半では、高度なネットワーキングオプションと、VM の接続性をカスタマイズする方法を探ります。
++
+image::module-01-intro/10_Fedora_Details.png[link=self, window=blank, width=100%] [[admin_vms]] [[admin_vms]] [[admin_vms]]
+
+[[admin_vms]]
+== 仮想マシンの管理
+
+仮想マシンの管理と使用は、単に仮想マシンの設定を作成しカスタマイズするだけではありません。プラットフォーム管理者として、リソースのバランスをとり、メンテナンスタスクを実行し、ノードを再構成できるようにVMの状態を制御し、ライブマイグレーションをトリガーできる必要もあります。
+
+. *Configuration* タブをクリックし、仮想マシンのリソースに関する情報を取得します。
++
+image::module-01-intro/11_Configuration_Tab_Nav.png[link=self,window=blank,width=100%]
++
+7 つのサブタブがあります：
++
+image::module-01-intro/12_Configuration_Tab.png[link=self, window=blank, width=100%]
++
+* *Details* : このタブは、VMの物理的な機能を1つのパネルに表示します。ここから、CPUやメモリの変更、ホスト名の変更、パススルーデバイスのアタッチ、ブート順の変更など、様々な記述や基本的なハードウェア設定の編集を行うことができます。
+* *Storage* : このタブにはシステムに接続されているディスクが一覧表示され、システムに新しいディスクを追加することができます。ゲストがエージェントで設定されている場合、ファイルシステムと使用率が一覧表示されます。ここでは、_ConfigMaps_ 、_Secrets_ および _Service Accounts_ を追加ディスクとしてアタッチできます。これは、仮想マシン内で実行されているアプリケーションに構成情報を渡す場合に便利です。
+* *Network* : このタブには、仮想マシンに設定されている現在のネットワークインターフェイスが表示されます。
+* *Scheduling* : このタブには、VM を実行する場所と、立ち退きに従う戦略を示す高度な設定オプションが含まれます。このタブは、(アンチ)アフィニティルールの設定、ノードセレクタと許容値の設定、および VM がスケジューリングされるクラスタノードに影響を与えるその他の動作の設定に使用されます。
+* *SSH* : このタブでは、設定されたロードバランサー上に SSH サービスを作成するか、機能が有効になっている場合はパブリック SSH キーを注入することで、VMへのリモートアクセスを設定できます。
+* *Initial run* : このタブでは、Linuxの場合は _cloud-init_ を、Microsoft Windowsの場合は _sys-prep_ を設定することができます。これには、SSHキーの注入、アプリケーションのインストール、ネットワーク設定など、最初のブート時に実行するコマンドの設定が含まれます。
+* *Metadata* : このタブには、仮想マシンに適用されている現在のラベルと注釈が表示されます。これらの値を変更することで、特定の目的のためにマシンにタグを付けたり、マシンを一意に識別して自動化されたワークフローを有効にするのに役立ちます。
+
+. *Storage* タブをクリックして、VMに関連付けられているディスクを一覧表示します:
++
+image::module-01-intro/13_Storage_Tab.png[link=self,window=blank,width=100%]
++
+このラボ環境では、ディスクに使用されるストレージのソースとタイプを定義するデフォルトのStorageClassには *ocs-external-storagecluster-ceph-rbd* が設定されています。このストレージは、仮想マシンを実行するために OpenShift Data Foundation (ODF) によって提供されるデフォルトのタイプです。各ストレージプロバイダには、VMディスクをバックアップするストレージの特性を定義する異なるストレージクラスがあります。
+
+. *Network* サブタブをクリックして、VM に接続されているネットワークインターフェイスを調べます：
++
+image::module-01-intro/14_Network_Tab.png[link=self,window=blank,width=100%]
++
+VM が作成されると、デフォルトで *Pod Networking* ネットワーク上に *masquerade* タイプのインターフェースが作成されます。これは VM を SDN に接続し、VM から OpenShift クラスタ外へのアクセスを提供します。クラスタ内の他の VM や Pod はこのインターフェースを使用して仮想マシンにアクセスできます。
+さらに、SDN に接続された VM は、Route を使って外部にアクセスしたり、ロードバランサータイプの Service を使ったり、外部ネットワークに直接アクセスできるように Network Attachment Definition を設定することもできます。
+
+[[vm_state]]
+== 仮想マシンの状態の制御
+
+仮想化へのアクセス権限を持つユーザーとして、Webコンソールから仮想マシンを停止、起動、再起動、一時停止、および一時停止解除できます。
+
+. *Overview* タブをクリックすると、VMの概要の画面に戻ります。
+
+. 右上にStop、Restart、Pauseのショートカットボタンがあります。また、*Actions* ドロップダウンメニューも表示されます。
++
+image::module-01-intro/15_VM_State_Actions.png[link=self, window=blank, width=100%]
++
+.. *Stop* : 仮想マシンのグレースフル・シャットダウンを開始します。
+.. *Restart* : 仮想マシンを再起動する信号をオペレーティングシステムに送信します。これが正しく機能するには、ゲスト統合が必要です。
+.. *Pause* : プロセスはCPUリソースとI/Oにアクセスすることなくフリーズしますが、ハイパーバイザーレベルでVMが使用するメモリは割り当てられたままになります。
+
+. これらのオプションやその他のオプションにアクセスするには、[*Actions*] メニューをクリックし、ドロップダウンリストで利用可能なオプションを確認します。
++
+image::module-01-intro/16_VM_Actions_Menu.png[link=self, window=blank, width=100%]
++
+. *Stop* ボタンを押し、仮想マシンが *Stopped* 状態になるまで待ちます。
++
+image::module-01-intro/17_VM_Stopped.png[link=self, window=blank, width=100%]
+. *Actions* をクリックすると、オプションの *Start* が表示され、オプションの *Restart* と *Pause* はグレーアウトされます。
++
+image::module-01-intro/18_VM_Actions_List_Stopped.png[link=self, window=blank, width=100%]
+
+. *Start* をクリックし、*Running* ステータスになるのを待ちます。
+
+. *Actions* メニューまたはショートカットボタンを使用して、*Pause* を実行します。仮想マシンの状態が *Paused* に変わります。
++
+image::module-01-intro/19_VM_Actions_Paused.png[link=self, window=blank, width=100%]
+
+. *Actions* メニューの *Unpause* オプション、またはショートカットボタンを使用して、仮想マシンの一時停止を解除します。
+
+[[live_migrate]]
+== 仮想マシンのライブマイグレート
+
+このセクションでは、VM をシャットダウンせずに OpenShift ノードから別のノードに移行します。ライブマイグレーションには、VMディスクを移行元と移行先の両方のノードに同時にマウントできるように、*ReadWriteMany* (RWX) ストレージが必要です。OpenShift Virtualizationは、他の仮想化ソリューションとは異なり、多数の異なるVMのための多くのVMディスクを保持する各クラスタメンバーにマウントされたモノリシックデータストアを使用しません。
+その代わりに、各VMディスクは必要なときに必要な場所にのみマウントされる独自のボリュームに格納されます。
+
+. *Overview* タブに移動します。クラスタ管理者でログインしている場合、VMが稼働しているノードを確認することができます。
++
+[NOTE]
+====
+ワークショップで使用するユーザはクラスタ管理者ではないため、VMの稼働ノードを見ることはできません。
+下記のスクリーンショットは管理者で表示した例です。
+
+しかし、VMのマイグレーションは可能です（ノードの変更が表示されないだけです）。
+====
++
+image::module-01-intro/20_VM_Info_Node.png[link=self, window=blank, width=100%]
+
++
+. *Actions* メニューを使用して、 *Migrate* オプションを選択します。
++
+image::module-01-intro/21_VM_Dialog_Migrate.png[link=self, window=blank, width=100%]
+
+. VMのステータスが *Migrating* に変更され、数秒後、*Running* ステータスに戻ることを確認します。これでライブマイグレーションが完了しました。
++
+image::module-01-intro/22_Migrated.png[link=self, window=blank, width=100%]
++
+[NOTE]
+====
+クラスタ管理者ユーザでVMを実行しているPodを見ると、VMがノード間を移動しているのがわかります。
+
+ワークショップで使用するユーザはクラスタ管理者ではないため、VMの稼働ノードを見ることはできません。下記のスクリーンショットは管理者で表示した例です。
+====
++
+image::module-01-intro/23_PodLink.png[link=self, window=blank, width=100%]
+image::module-01-intro/24_Pod.png[link=self, window=blank, width=100%]
+
+== まとめ
+
+この実習ラボでは、仮想マシンの状態管理タスクを確認し、VM のライブマイグレーションを実行しました。これらの両方は、プラットフォーム管理者として一般的で必要なタスクであり、OpenShift Virtualization で VM を扱うときに利用可能ないくつかの基本的な機能に慣れるための素晴らしい方法です。
