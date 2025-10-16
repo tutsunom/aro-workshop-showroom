@@ -11,7 +11,7 @@ content:
 
 asciidoc:
   attributes:
-    lab_name: ARO Workshop
+    lab_name: ARO Virt Workshop
     release-version: master
     page-pagination: true
   extensions:

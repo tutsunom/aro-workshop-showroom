@@ -1,11 +1,11 @@
 name: modules
-title: ARO Workshop
+title: ARO Virt Workshop
 version: master
 nav:
 - modules/ROOT/nav.adoc
 asciidoc:
   attributes:
-    lab_name: ARO Workshop
+    lab_name: ARO Virt Workshop
     release_version: master
     page-pagination: true  
     experimental: true
