@@ -114,7 +114,7 @@ image::module-02-mtv/17_VM_Select_VMWARE_Plan.png[link=self, window=blank, width
 * Source network: *segment-sandbox-xxxxx*
 * Target network: *default/nad-sandbox-xxxxx*
 +
-image::module-02-mtv/18_Network_Map.png[link=self, window=blank, width=100%]
+image::module-02-mtv/18_Network_Map.PNG[link=self, window=blank, width=100%]
 
 . 同様に、*Storage map* を設定します。*Storage map* は、VMware vSphere のデータストアを OpenShift の Storage class にマッピングするために使用されます。以下のように入力して *Next* をクリックします。
 +
@@ -122,7 +122,7 @@ image::module-02-mtv/18_Network_Map.png[link=self, window=blank, width=100%]
 * Source network: *workload_share_xxxxx*
 * Target network: *ocs-storagecluster-ceph-rbd*
 +
-image::module-02-mtv/18_Storage_Map.png[link=self, window=blank, width=100%]
+image::module-02-mtv/18_Storage_Map.PNG[link=self, window=blank, width=100%]
 +
 NOTE: ネットワークマップとストレージマップは、検出された仮想マシンがソースプロバイダ上で現在使用しているネットワークとデータストアを自動的に検出して表示します。
 
