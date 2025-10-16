@@ -92,18 +92,18 @@ image::module-01-intro/10_Fedora_Details.png[link=self, window=blank, width=100%
 
 . 左メニューから *Virtualization* -> *VirtualMachines* に移動し、右上のボタンの *Create* をクリックし、*From template* を選択します。
 +
-image::images/Create_VM_PVC/26_From_Template.png[]
+image::Create_VM_PVC/26_From_Template.png[]
 . 下にスクロールして、*Microsoft Windows Server 2019 VM* を選択します。
 +
-image::images/Create_VM_PVC/27_Windows_2k9_Tile.png[]
+image::Create_VM_PVC/27_Windows_2k9_Tile.png[]
 
 . テンプレートに関するデフォルトの構成を示すダイアログが表示されます。
 +
-image::images/Create_VM_PVC/28_Windows_2k9_Dialog.png[]
+image::Create_VM_PVC/28_Windows_2k9_Dialog.png[]
 
 . *Customize VirtualMachine* をクリックして、プロビジョニングで使用するパラメータを指定します。
 +
-image::images/Create_VM_PVC/29_Windows_2k9_Parameters.png[]
+image::Create_VM_PVC/29_Windows_2k9_Parameters.png[]
 
 . ダイアログでは次のように入力します。
 .. *Name* : `windows`
@@ -116,11 +116,11 @@ image::images/Create_VM_PVC/29_Windows_2k9_Parameters.png[]
 
 . パラメータを入力したら *Next* を押します。
 +
-image::images/Create_VM_PVC/30_Windows_2k9_Parameters_Filled.png[]
+image::Create_VM_PVC/30_Windows_2k9_Parameters_Filled.png[]
 
 . *Scripts* タブに切り替えて、`Sysprep` セクションの *Edit* をクリックします。
 +
-image::images/Create_VM_PVC/30_Windows_2k9_Scripts.png[]
+image::Create_VM_PVC/30_Windows_2k9_Scripts.png[]
 
 . `Autounattend.xml answer file`` のフォームに、以下のコードをコピー&ペーストします。
 +
@@ -265,19 +265,19 @@ image::images/Create_VM_PVC/30_Windows_2k9_Scripts.png[]
 
 . *Save* をクリックします。
 +
-image::images/Create_VM_PVC/30_Windows_2k9_Sysprep.png[]
+image::Create_VM_PVC/30_Windows_2k9_Sysprep.png[]
 
 . `Autounattend.xml answer file` が `Available` と表示されていることを確認し、*Create VirtualMachine* を押します。
 +
-image::images/Create_VM_PVC/31_Windows_2k9_Create.png[]
+image::Create_VM_PVC/31_Windows_2k9_Create.png[]
 
 . VM は ISO イメージのダウンロード、設定、インスタンスの起動によって、プロビジョニングプロセスを開始します。
 +
-image::images/Create_VM_PVC/32_Windows_2k9_Provisioning.png[]
+image::Create_VM_PVC/32_Windows_2k9_Provisioning.png[]
 
 . 数分後、`windows` VM が `Running` ステータスになります。*Console* タブに切り替えると、Windows のインストールプロセスが進んでいることが確認できます。
 +
-image::images/Create_VM_PVC/33_Windows_2k9_Console.png[]
+image::Create_VM_PVC/33_Windows_2k9_Console.png[]
 +
 [NOTE]
 Windows のインストールが完了するまで待つ必要はありません。次にセクションに進むことができます。
