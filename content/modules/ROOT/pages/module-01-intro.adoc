@@ -92,7 +92,6 @@ image::module-01-intro/10_Fedora_Details.png[link=self, window=blank, width=100%
 
 . 左メニューから *Virtualization* -> *VirtualMachines* に移動し、右上のボタンの *Create* をクリックし、*From template* を選択します。
 +
-image::Create_VM_PVC/26_From_Template.png[]
 . 下にスクロールして、*Microsoft Windows Server 2019 VM* を選択します。
 +
 image::Create_VM_PVC/27_Windows_2k9_Tile.png[]
