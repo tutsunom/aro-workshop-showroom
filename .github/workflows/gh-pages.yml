@@ -26,3 +26,13 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: www
+  deploy:
+    needs: build
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-22.04
+    steps:
+    - name: deploy github pages
+      id: deployment
+      uses: actions/deploy-pages@v4
