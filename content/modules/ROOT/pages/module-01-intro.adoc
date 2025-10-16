@@ -11,7 +11,7 @@
 * OpenShift コンソールを使用して VM の電源状態がどのように管理されるかを理解する。
 * 2つのホスト間でVMをライブマイグレートする
 
-== Administratorパースペクティブに切り替える
+== OpenShift コンソールへのログイン
 OpenShift コンソールにログインします。ログイン情報はラボ環境の要件セクションで提供されています。
 
 - username: kubeadmin
@@ -22,11 +22,7 @@ OpenShift コンソールにログインします。ログイン情報はラボ�
 
 OpenShiftの他のオブジェクトと同様に、Project（Kubnernetesの名前空間を抽象化したもの）は、パーミッションやリソースを使用・管理するための境界線となります。プロジェクトの作成はデプロイの重要な第一歩です。
 
-. 初めてコンソールにログインすると、*Developer* パースペクティブが表示されます。プロンプトを表示させないようにするには、*Skip tour* をクリックします。次に、*Developer* をクリックし、*Administrator* に切り替えます。
-+
-image::module-01-intro/00_Admin_Perpspective.png[link=self, window=blank, width=100%]
-
-. 左のナビゲーションメニューを使用して、*Virtualization* -> *VirtualMachines* をブラウズします：
+. 左上に **管理者向け向け表示** と表記されていることを確認し、左のナビゲーションメニューを使用して、*Virtualization* -> *VirtualMachines* をブラウズします：
 +
 image::module-01-intro/01_Left_Menu.png[link=self, window=blank, width=100%]
 +
@@ -35,24 +31,13 @@ image::module-01-intro/01_Left_Menu.png[link=self, window=blank, width=100%]
 *Virtualization* タブが使用できるのは、Red Hat OpenShift Virtualization がインストールされ、適切に設定されている場合のみです。このラボ環境では、インストールと設定はすでに実行されています。
 ====
 
-. *Projects* ドロップダウンからプロジェクト `vmimported-{user}` に切り替えます。
-+
-[NOTE]
-====
-このラボガイドの画像には、あなたのユーザー番号とは異なるユーザー番号が表示されているかもしれません。ご自身のユーザー番号に読み替えて作業をご実施ください。
-====
-
-. 表示された *VirtualMachines* ダッシュボードを調べます。現在、VM は何も稼働していませんが、稼働している場合は図のように
-+
-image::module-01-intro/02_VM_List.png[link=self, window=blank, width=100%]
-
 . VMを作成する前に、新しいプロジェクトを作成する必要があります。仮想マシンは特定のプロジェクト、つまりネームスペースにデプロイされます。デフォルトでは、いずれかのプロジェクトへのアクセス権限を持たないユーザーは、仮想マシンにアクセスしたり、管理したり、コントロールしたりすることはできません。管理者はすべてのプロジェクトにアクセスできるため、すべての仮想マシンを見ることができますが、一般ユーザーには必要に応じてプロジェクトへのアクセス権を与える必要があります。
 +
-.. ウィンドウの左上にある *Project: vmimported-{user}* をクリックし、*Create Project* をクリックします。
+.. ウィンドウの左上にある *Project: * をクリックし、*Create Project* をクリックします。
 +
 image::module-01-intro/02_All_Projects.png[link=self, window=blank, width=100%]
 
-.. *Name* フィールドに *vmexamples-{user}* と入力してプロジェクトの名前を付け、 *Create* をクリックします。
+.. *Name* フィールドに *vmexamples* と入力してプロジェクトの名前を付け、 *Create* をクリックします。
 +
 image::module-01-intro/03_Create_Project.png[link=self, window=blank, width=100%]
 
@@ -123,7 +108,7 @@ image::module-01-intro/12_Configuration_Tab.png[link=self, window=blank, width=1
 +
 image::module-01-intro/13_Storage_Tab.png[link=self,window=blank,width=100%]
 +
-このラボ環境では、ディスクに使用されるストレージのソースとタイプを定義するデフォルトのStorageClassには *ocs-external-storagecluster-ceph-rbd* が設定されています。このストレージは、仮想マシンを実行するために OpenShift Data Foundation (ODF) によって提供されるデフォルトのタイプです。各ストレージプロバイダには、VMディスクをバックアップするストレージの特性を定義する異なるストレージクラスがあります。
+このラボ環境では、ディスクに使用されるストレージのソースとタイプを定義するデフォルトのStorageClassには *managed-csi* が設定されています。このストレージは、仮想マシンを実行するために OpenShift Data Foundation (ODF) によって提供されるデフォルトのタイプです。各ストレージプロバイダには、VMディスクをバックアップするストレージの特性を定義する異なるストレージクラスがあります。
 
 . *Network* サブタブをクリックして、VM に接続されているネットワークインターフェイスを調べます：
 +
@@ -176,10 +161,7 @@ image::module-01-intro/19_VM_Actions_Paused.png[link=self, window=blank, width=1
 +
 [NOTE]
 ====
-ワークショップで使用するユーザはクラスタ管理者ではないため、VMの稼働ノードを見ることはできません。
-下記のスクリーンショットは管理者で表示した例です。
-
-しかし、VMのマイグレーションは可能です（ノードの変更が表示されないだけです）。
+下記のスクリーンショットのように、VMが稼働するノードに注目すると、ライブマイグレーション前後でノードが変わっていることがわかります。
 ====
 +
 image::module-01-intro/20_VM_Info_Node.png[link=self, window=blank, width=100%]
