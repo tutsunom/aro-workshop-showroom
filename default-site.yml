@@ -1,6 +1,6 @@
 ---
 site:
-  title: ARO Workshop
+  title: ARO Virt Workshop
   start_page: modules::index.adoc
 
 content:
